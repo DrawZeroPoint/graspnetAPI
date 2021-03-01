@@ -516,13 +516,14 @@ class GraspGroup():
         widths = self.widths
         object_ids = self.object_ids
 
-        mask = (rotations[:, 2, 0] > 0.99)
-        tranlations = tranlations[mask]
-        depths = depths[mask]
-        widths = widths[mask]
-        scores = scores[mask]
-        rotations = rotations[mask]
-        object_ids = object_ids[mask]
+        # FIXME dzp remove the mask
+        # mask = (rotations[:, 2, 0] > 0.99)
+        # tranlations = tranlations[mask]
+        # depths = depths[mask]
+        # widths = widths[mask]
+        # scores = scores[mask]
+        # rotations = rotations[mask]
+        # object_ids = object_ids[mask]
         
         if tranlations.shape[0] == 0:
             return None
@@ -1068,7 +1069,8 @@ class RectGraspGroup():
         - RectGraspGroup instance of sample grasps.
         '''
         if numGrasp > self.__len__():
-            raise ValueError('Number of sampled grasp should be no more than the total number of grasps in the group')
+            numGrasp = self.__len__()
+            # raise ValueError('Number of sampled grasp should be no more than the total number of grasps in the group')
         shuffled_rect_grasp_group_array = copy.deepcopy(self.rect_grasp_group_array)
         np.random.shuffle(shuffled_rect_grasp_group_array)
         shuffled_rect_grasp_group = RectGraspGroup()
