@@ -129,7 +129,9 @@ class GraspNetEval(GraspNet):
         collision_list_list = []
 
         for ann_id in range(256):
-            grasp_group = GraspGroup().from_npy(os.path.join(dump_folder,get_scene_name(scene_id), self.camera, '%04d.npy' % (ann_id,)))
+            grasp_group = GraspGroup().from_npy(
+                os.path.join(dump_folder,get_scene_name(scene_id), self.camera, '%04d.npy' % (ann_id,))
+            )
             _, pose_list, camera_pose, align_mat = self.get_model_poses(scene_id, ann_id)
             table_trans = transform_points(table, np.linalg.inv(np.matmul(align_mat, camera_pose)))
 
@@ -141,7 +143,9 @@ class GraspNetEval(GraspNet):
             gg_array[max_width_mask,1] = max_width
             grasp_group.grasp_group_array = gg_array
 
-            grasp_list, score_list, collision_mask_list = eval_grasp(grasp_group, model_sampled_list, dexmodel_list, pose_list, config, table=table_trans, voxel_size=0.008, TOP_K = TOP_K)
+            grasp_list, score_list, collision_mask_list = eval_grasp(grasp_group, model_sampled_list, dexmodel_list,
+                                                                     pose_list, config, table=table_trans,
+                                                                     voxel_size=0.008, TOP_K = TOP_K)
 
             # remove empty
             grasp_list = [x for x in grasp_list if len(x) != 0]
@@ -188,11 +192,11 @@ class GraspNetEval(GraspNet):
             collision_list_list.append(collision_mask_list)
 
             #calculate AP
-            grasp_accuracy = np.zeros((TOP_K,len(list_coe_of_friction)))
+            grasp_accuracy = np.zeros((TOP_K, len(list_coe_of_friction)))
             for fric_idx, fric in enumerate(list_coe_of_friction):
-                for k in range(0,TOP_K):
-                    if k+1 > len(score_list):
-                        grasp_accuracy[k,fric_idx] = np.sum(((score_list<=fric) & (score_list>0)).astype(int))/(k+1)
+                for k in range(0, TOP_K):
+                    if k + 1 > len(score_list):
+                        grasp_accuracy[k, fric_idx] = np.sum(((score_list<=fric) & (score_list>0)).astype(int))/(k+1)
                     else:
                         grasp_accuracy[k,fric_idx] = np.sum(((score_list[0:k+1]<=fric) & (score_list[0:k+1]>0)).astype(int))/(k+1)
 

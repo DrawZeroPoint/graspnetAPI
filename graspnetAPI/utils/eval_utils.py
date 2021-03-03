@@ -333,6 +333,9 @@ def eval_grasp(grasp_group, models, dexnet_models, poses, config, table=None, vo
     scene = np.concatenate(model_trans_list, axis=0)
 
     # assign grasps
+    '''If the center point lies in segmentation of a object, this grasp
+    is considered to be carried out on that object.
+    '''
     indices = compute_closest_points(grasp_group.translations, scene)
     model_to_grasp = seg_mask[indices]
     pre_grasp_list = list()
@@ -342,6 +345,8 @@ def eval_grasp(grasp_group, models, dexnet_models, poses, config, table=None, vo
         pre_grasp_list.append(grasp_i[:10].grasp_group_array)
     all_grasp_list = np.vstack(pre_grasp_list)
     remain_mask = np.argsort(all_grasp_list[:,0])[::-1]
+    if len(remain_mask) == 0:
+        return [], [], []
     min_score = all_grasp_list[remain_mask[min(49,len(remain_mask) - 1)],0]
 
     grasp_list = []
