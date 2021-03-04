@@ -91,7 +91,7 @@ class GraspNetEval(GraspNet):
             pose_list.append(mat)
         return obj_list, pose_list, camera_pose, align_mat
         
-    def eval_scene(self, scene_id, dump_folder, TOP_K = 50, return_list = False,vis = False, max_width = 0.1):
+    def eval_scene(self, scene_id, dump_folder, TOP_K = 50, return_list = False, vis = False, max_width = 0.1):
         '''
         **Input:**
 
@@ -174,7 +174,7 @@ class GraspNetEval(GraspNet):
                 scores = scores / 2 + 0.5 # -1 -> 0, 0 -> 0.5, 1 -> 1
                 scores[collision_mask_list] = 0.3
                 gg.scores = scores
-                gg.widths = 0.1 * np.ones((len(gg)), dtype = np.float32)
+                # gg.widths = max_width * np.ones((len(gg)), dtype = np.float32)
                 grasps_geometry = gg.to_open3d_geometry_list()
                 pcd = self.loadScenePointCloud(scene_id, self.camera, ann_id)
 
