@@ -301,10 +301,17 @@ def plot_gripper_pro_max(center, R, width, depth, score=1):
     finger_width = 0.004
     tail_length = 0.04
     depth_base = 0.02
-    
-    color_r = score # red for high score
-    color_b = 1 - score # blue for low score
-    color_g = 0
+
+    if score >= 0:
+        # No collision
+        color_r = score  # red for high score
+        color_b = 1 - score  # blue for low score
+        color_g = 0
+    else:
+        # The score is offset by -2 from its original value
+        color_r = 0
+        color_b = 0
+        color_g = score + 2  # greener means the original grasp is better
     left = create_mesh_box(depth+depth_base+finger_width, finger_width, height)
     right = create_mesh_box(depth+depth_base+finger_width, finger_width, height)
     bottom = create_mesh_box(finger_width, width, height)

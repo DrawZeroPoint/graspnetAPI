@@ -172,7 +172,7 @@ class GraspNetEval(GraspNet):
                 gg = GraspGroup(copy.deepcopy(grasp_list))
                 scores = np.array(score_list)
                 scores = scores / 2 + 0.5 # -1 -> 0, 0 -> 0.5, 1 -> 1
-                scores[collision_mask_list] = 0.3
+                scores[collision_mask_list] -= 2
                 gg.scores = scores
                 # gg.widths = max_width * np.ones((len(gg)), dtype = np.float32)
                 grasps_geometry = gg.to_open3d_geometry_list()
@@ -196,7 +196,8 @@ class GraspNetEval(GraspNet):
             for fric_idx, fric in enumerate(list_coe_of_friction):
                 for k in range(0, TOP_K):
                     if k + 1 > len(score_list):
-                        grasp_accuracy[k, fric_idx] = np.sum(((score_list<=fric) & (score_list>0)).astype(int))/(k+1)
+                        assert len(score_list) > 0
+                        grasp_accuracy[k, fric_idx] = np.sum(((score_list<=fric) & (score_list>0)).astype(int))/len(score_list)
                     else:
                         grasp_accuracy[k,fric_idx] = np.sum(((score_list[0:k+1]<=fric) & (score_list[0:k+1]>0)).astype(int))/(k+1)
 
